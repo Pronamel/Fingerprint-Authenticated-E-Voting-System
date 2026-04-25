@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using SecureVoteApp.Models;
+
+namespace SecureVoteApp.Services;
+
+public interface IApiService
+{
+    // Authentication & Session Management
+    Task<VoterLinkResponse> LinkToOfficialAsync(string pollingStationCode, string county, string constituency);
+    Task<VoterAuthLookupResponse?> LookupVoterForAuthAsync(string? firstName, string? lastName, string? dateOfBirth, string? postCode, string? townOfBirth, string county, string constituency);
+    
+    // Candidates
+    Task<List<Candidate>> FetchCandidatesAsync();
+    
+    // Vote Casting
+    Task<CastVoteResponse> CastVoteAsync(Guid candidateId, string candidateName, string partyName);
+    Task<ProxyAuthorizationResponse?> ValidateProxyAuthorizationAsync(Guid representedVoterId, Guid proxyVoterId);
+    void ConfigureProxyVotingSession(Guid representedVoterId, Guid proxyVoterId);
+    void ClearProxyVotingSession();
+    
+    // Voter State
+    bool IsAuthenticated { get; }
+    string? CurrentVoterId { get; }
+    string? AssignedStationId { get; }
+    int AssignedVoterId { get; }
+    string SelectedCounty { get; }
+    string PollingStationCode { get; }
+    string DeviceId { get; }
+    string CurrentDeviceStatus { get; set; }
+    string? GetAuthToken();
+    string GetRealtimeHubUrl();
+    Task LogoutAsync();
+    void Logout();
+    
+    // Voter Access Management
+    Task<bool> RequestAccessAsync(string? deviceName = null);
+    
+    // Real-time Communication (Distributed Validation)
+    Task<bool> SubmitCodeForVerificationAsync(string accessCode);
+
+    // Device Status Tracking
+    Task<bool> SendDeviceStatusAsync(string status);
+    Task<List<VoterCommandResponse>> GetPendingDeviceCommandsAsync();
+    
+    // Fingerprint Verification
+    Task<FingerprintVerificationResponse?> VerifyFingerprintAsync(string? voterId, byte[] scannedFingerprint, List<string>? candidateVoterIds = null);
+}

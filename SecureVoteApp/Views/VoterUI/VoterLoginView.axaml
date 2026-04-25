@@ -1,0 +1,123 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:vm="using:SecureVoteApp.ViewModels"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+            x:Class="SecureVoteApp.Views.VoterUI.VoterLoginView"
+            x:DataType="vm:VoterLoginViewModel">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:VoterLoginViewModel/>
+    </Design.DataContext>
+
+    <Grid Background="#BBE1FA">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="25" Width="400">
+            
+            <!-- Voter Login Title -->
+            <TextBlock Text="Link Device" 
+                       FontSize="32" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center" 
+                       Foreground="#1B262C" 
+                       Margin="0,0,0,0"/>
+
+            <!-- County Selection Section -->
+            <Grid Width="400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="176"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="208"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- County Selection -->
+                <StackPanel Grid.Column="0" Spacing="8">
+                    <TextBlock Text="County" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#1B262C"/>
+                    <ComboBox Name="CountyComboBox"
+                              SelectedItem="{Binding SelectedCounty}"
+                              ItemsSource="{Binding CountyOptions}"
+                              MaxDropDownHeight="220"
+                              Width="176"
+                              Background="White"
+                              BorderBrush="#3282B8"
+                              BorderThickness="2"
+                              CornerRadius="5"
+                              Padding="10"
+                              FontSize="14"
+                              Height="40"
+                              PlaceholderText="Select County"/>
+                </StackPanel>
+                <!-- Constituency Selection -->
+                <StackPanel Grid.Column="2" Spacing="8">
+                    <TextBlock Text="Constituency" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#1B262C"/>
+                    <ComboBox Name="ConstituencyComboBox"
+                              SelectedItem="{Binding SelectedConstituency}"
+                              ItemsSource="{Binding ConstituencyOptions}"
+                              MaxDropDownHeight="220"
+                              Width="208"
+                              Background="White"
+                              BorderBrush="#3282B8"
+                              BorderThickness="2"
+                              CornerRadius="5"
+                              Padding="10,10,0,10"
+                              FontSize="14"
+                              Height="40"
+                              PlaceholderText="Select Constituency"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Polling Station Code Section -->
+            <StackPanel Spacing="8" Width="400">
+                <TextBlock Text="Polling Station Code (e.g., STN-042)" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"
+                           Foreground="#1B262C"/>
+                <TextBox Name="PollingStationCodeTextBox"
+                         Text="{Binding PollingStationCode}"
+                         Width="400"/>
+            </StackPanel>
+
+            <!-- Status Messages Section -->
+            <StackPanel Spacing="5">
+                <!-- Main Status Message Display -->
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Foreground="#0F4C75"
+                           Margin="0,10,0,0"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+                <!-- Link  Button -->
+            <Button Command="{Binding ContinueCommand}"
+                    Content="Link"
+                    Background="#0F4C75"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    Padding="40,12"
+                    CornerRadius="8"
+                    BorderThickness="2"
+                    BorderBrush="#1B262C"
+                    Margin="0,20,0,0"
+                    Cursor="Hand">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#3282B8"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,333 @@
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
+namespace SecureVoteApp.Models;
+
+// Voter Authentication Models
+public class VoterSessionRequest
+{
+    [JsonPropertyName("voterId")]
+    public string VoterId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("stationId")]
+    public string? StationId { get; set; }
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+    
+    [JsonPropertyName("constituency")]
+    public string Constituency { get; set; } = string.Empty;
+}
+
+public class VoterSessionResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("token")]
+    public string Token { get; set; } = string.Empty;
+    
+    [JsonPropertyName("role")]
+    public string Role { get; set; } = string.Empty;
+    
+    [JsonPropertyName("voterId")]
+    public string VoterId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("sessionId")]
+    public string SessionId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+    
+    [JsonPropertyName("expiresAt")]
+    public DateTime ExpiresAt { get; set; }
+}
+
+// Voter Access Management Models
+public class VoterAccessRequest
+{
+    [JsonPropertyName("voterId")]
+    public string VoterId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("deviceName")]
+    public string DeviceName { get; set; } = string.Empty;
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+}
+
+public class CodeWaitResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("code")]
+    public string? Code { get; set; }
+    
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+}
+
+// Distributed Validation Models
+public class CodeVerificationRequest
+{
+    [JsonPropertyName("voterId")]
+    public string VoterId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("accessCode")]
+    public string AccessCode { get; set; } = string.Empty;
+    
+    [JsonPropertyName("stationId")]
+    public string? StationId { get; set; }
+}
+
+public class VoterCommandResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("commandType")]
+    public string CommandType { get; set; } = string.Empty;
+    
+    [JsonPropertyName("data")]
+    public object? Data { get; set; }
+    
+    [JsonPropertyName("officialId")]
+    public string? OfficialId { get; set; }
+    
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+}
+
+public class PendingDeviceCommandsResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+
+    [JsonPropertyName("commands")]
+    public List<VoterCommandResponse> Commands { get; set; } = new();
+}
+
+
+
+// Voter-Official Linking Models
+public class VoterLinkRequest
+{
+    [JsonPropertyName("pollingStationCode")]
+    public string PollingStationCode { get; set; } = string.Empty;
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+    
+    [JsonPropertyName("constituency")]
+    public string Constituency { get; set; } = string.Empty;
+}
+
+public class VoterLinkResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("assignedVoterId")]
+    public int AssignedVoterId { get; set; }
+    
+    [JsonPropertyName("connectedOfficialId")]
+    public string ConnectedOfficialId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("connectedStationId")]
+    public string ConnectedStationId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
+    
+    [JsonPropertyName("token")]
+    public string? Token { get; set; }
+}
+
+// Voter Authentication Lookup Models
+public class VoterAuthLookupRequest
+{
+    [JsonPropertyName("firstName")]
+    public string? FirstName { get; set; }
+    
+    [JsonPropertyName("lastName")]
+    public string? LastName { get; set; }
+    
+    [JsonPropertyName("dateOfBirth")]
+    public string? DateOfBirth { get; set; }
+
+    [JsonPropertyName("postCode")]
+    public string? PostCode { get; set; }
+
+    [JsonPropertyName("townOfBirth")]
+    public string? TownOfBirth { get; set; }
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+    
+    [JsonPropertyName("constituency")]
+    public string Constituency { get; set; } = string.Empty;
+}
+
+public class VoterAuthLookupResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
+    
+    [JsonPropertyName("voterId")]
+    public Guid? VoterId { get; set; }
+    
+    [JsonPropertyName("fullName")]
+    public string? FullName { get; set; }
+    
+    [JsonPropertyName("fingerprintScan")]
+    public byte[]? FingerprintScan { get; set; }
+    
+    [JsonPropertyName("matchedBy")]
+    public string? MatchedBy { get; set; }
+
+    [JsonPropertyName("requiresDisambiguation")]
+    public bool RequiresDisambiguation { get; set; }
+
+    [JsonPropertyName("candidateVoterIds")]
+    public List<Guid>? CandidateVoterIds { get; set; }
+}
+
+// Vote casting models
+public class CastVoteRequest
+{
+    [JsonPropertyName("voterId")]
+    public int VoterId { get; set; }
+
+    [JsonPropertyName("voterDatabaseId")]
+    public Guid? VoterDatabaseId { get; set; }
+
+    [JsonPropertyName("proxyVoterDatabaseId")]
+    public Guid? ProxyVoterDatabaseId { get; set; }
+    
+    [JsonPropertyName("county")]
+    public string County { get; set; } = string.Empty;
+    
+    [JsonPropertyName("pollingStationId")]
+    public Guid PollingStationId { get; set; }
+
+    [JsonPropertyName("candidateId")]
+    public Guid CandidateId { get; set; }
+    
+    [JsonPropertyName("candidateName")]
+    public string CandidateName { get; set; } = string.Empty;
+    
+    [JsonPropertyName("partyName")]
+    public string PartyName { get; set; } = string.Empty;
+
+    [JsonPropertyName("constituency")]
+    public string Constituency { get; set; } = string.Empty;
+}
+
+public class CastVoteResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
+    
+    [JsonPropertyName("timestamp")]
+    public DateTime Timestamp { get; set; }
+}
+
+public class ProxyAuthorizationRequest
+{
+    [JsonPropertyName("representedVoterId")]
+    public Guid RepresentedVoterId { get; set; }
+
+    [JsonPropertyName("proxyVoterId")]
+    public Guid ProxyVoterId { get; set; }
+}
+
+public class ProxyAuthorizationResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
+}
+
+// Fingerprint Verification Models
+public class FingerprintVerificationRequest
+{
+    [JsonPropertyName("voterId")]
+    public string VoterId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("context")]
+    public string Context { get; set; } = string.Empty;
+    
+    [JsonPropertyName("credential")]
+    public string Credential { get; set; } = string.Empty;
+    
+    [JsonPropertyName("fingerprintImage")]
+    public string FingerprintImage { get; set; } = string.Empty; // Base64 encoded
+}
+
+public class FingerprintVerificationResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("verified")]
+    public bool Verified { get; set; }
+    
+    [JsonPropertyName("isMatch")]
+    public bool IsMatch { get; set; }
+    
+    [JsonPropertyName("matchScore")]
+    public double MatchScore { get; set; }
+    
+    [JsonPropertyName("score")]
+    public double Score { get; set; }
+    
+    [JsonPropertyName("threshold")]
+    public double Threshold { get; set; }
+    
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
+
+    [JsonPropertyName("matchedVoterId")]
+    public Guid? MatchedVoterId { get; set; }
+    
+    [JsonPropertyName("timestamp")]
+    public DateTime Timestamp { get; set; }
+}
+
+// Candidate Models
+public class Candidate
+{
+    [JsonPropertyName("candidateId")]
+    public Guid CandidateId { get; set; }
+    
+    [JsonPropertyName("firstName")]
+    public string FirstName { get; set; } = string.Empty;
+    
+    [JsonPropertyName("lastName")]
+    public string LastName { get; set; } = string.Empty;
+    
+    [JsonPropertyName("party")]
+    public string Party { get; set; } = string.Empty;
+    
+    [JsonPropertyName("bio")]
+    public string Bio { get; set; } = string.Empty;
+    
+    [JsonPropertyName("constituencyId")]
+    public Guid ConstituencyId { get; set; }
+    
+    [JsonPropertyName("constituencyName")]
+    public string ConstituencyName { get; set; } = string.Empty;
+    
+    // Computed property for display
+    public string FullName => $"{FirstName} {LastName}";
+}

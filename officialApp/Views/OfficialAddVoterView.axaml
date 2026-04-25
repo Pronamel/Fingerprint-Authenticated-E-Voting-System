@@ -1,0 +1,262 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:vm="using:officialApp.ViewModels"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d" d:DesignWidth="1325" d:DesignHeight="1788"
+            x:Class="officialApp.Views.OfficialAddVoterView"
+            x:DataType="vm:OfficialAddVoterViewModel">
+
+    <Design.DataContext>
+        <vm:OfficialAddVoterViewModel/>
+    </Design.DataContext>
+
+    <Grid Background="#B0E4CC">
+        <ScrollViewer>
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Spacing="15" Margin="20">
+            <TextBlock Text="Create User"
+                      FontSize="28"
+                      FontWeight="Bold"
+                      Foreground="Black"
+                      HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Choose user type, complete fields, scan fingerprint, then submit."
+                      TextWrapping="Wrap"
+                      Foreground="Black"
+                      FontSize="14"
+                      HorizontalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                <Button Content="Create Voter"
+                    Width="160"
+                    Height="42"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Command="{Binding SwitchToCreateVoterModeCommand}"
+                    Background="{StaticResource AccentBrush1}"
+                    Foreground="White"/>
+
+                <Button Content="Create Official"
+                    Width="160"
+                    Height="42"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Command="{Binding SwitchToCreateOfficialModeCommand}"
+                    Background="{StaticResource AccentBrush2}"
+                    Foreground="White"/>
+            </StackPanel>
+
+            <Separator Background="#ddd" Height="2" Margin="0,10,0,10"/>
+
+            <Grid ColumnDefinitions="2*,*" ColumnSpacing="24">
+                <StackPanel Grid.Column="0" Spacing="10" Margin="20,0,20,20">
+                    <Border IsVisible="{Binding IsCreateVoterMode}"
+                        Background="#285A48" CornerRadius="10" Padding="6">
+                        <Border Background="#408A71"
+                                BorderBrush="#0992C2"
+                                BorderThickness="2"
+                                CornerRadius="8"
+                                Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Voter Details" FontSize="16" FontWeight="Bold" Foreground="White"/>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <StackPanel Grid.Column="0" Spacing="5">
+                                <TextBlock Text="First Name (e.g., John)" Foreground="Black" FontSize="16"/>
+                                <TextBox Text="{Binding FirstName}" Height="40" FontSize="14" Foreground="#285A48" Padding="10" Background="#E0F5EC"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="5">
+                                <TextBlock Text="Last Name (e.g., Smith)" Foreground="Black" FontSize="16"/>
+                                <TextBox Text="{Binding LastName}" Height="40" FontSize="14" Foreground="#285A48" Padding="10" Background="#E0F5EC"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <StackPanel Grid.Column="0" Spacing="5">
+                                <TextBlock Text="National Insurance Number (optional, e.g., AB123456C)" Foreground="Black" FontSize="16"/>
+                                <TextBox Text="{Binding NationalInsuranceNumber}" Height="40" FontSize="14" Foreground="#285A48" Padding="10" Background="#E0F5EC"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="5">
+                                <TextBlock Text="Date of Birth" Foreground="Black" FontSize="16"/>
+                                <DatePicker SelectedDate="{Binding SelectedDateOfBirth}" Height="40" FontSize="14" Background="#E0F5EC"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Town Of Birth (e.g., London)" Foreground="Black" FontSize="16"/>
+                            <TextBox Text="{Binding TownOfBirth}" Height="40" FontSize="14" Foreground="#285A48" Padding="10" Background="#E0F5EC"/>
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,2*" ColumnSpacing="24">
+                            <StackPanel Grid.Column="0" Spacing="5">
+                                <TextBlock Text="Post Code (e.g., SW1A 1AA)" Foreground="Black" FontSize="16"/>
+                                <TextBox Text="{Binding PostCode}" Height="40" FontSize="14" Foreground="#285A48" Padding="10" Background="#E0F5EC"/>
+                            </StackPanel>
+
+                            <Grid Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <StackPanel Grid.Column="0" Spacing="5">
+                                    <TextBlock Text="County" Foreground="Black" FontSize="16"/>
+                                    <ComboBox SelectedItem="{Binding SelectedCounty}"
+                                              ItemsSource="{Binding CountyOptions}"
+                                              Height="40"
+                                              FontSize="14"
+                                              PlaceholderText="Select county"
+                                              Background="#E0F5EC"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="5">
+                                    <TextBlock Text="Constituency" Foreground="Black" FontSize="16"/>
+                                    <ComboBox SelectedItem="{Binding SelectedConstituency}"
+                                              ItemsSource="{Binding ConstituencyOptions}"
+                                              Height="40"
+                                              FontSize="14"
+                                              PlaceholderText="Select constituency"
+                                              Background="#E0F5EC"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+
+                            </StackPanel>
+                        </Border>
+                    </Border>
+
+                    <Border IsVisible="{Binding IsCreateOfficialMode}"
+                        Background="#285A48" CornerRadius="10" Padding="6">
+                        <Border Background="#408A71"
+                                BorderBrush="#0992C2"
+                                BorderThickness="2"
+                                CornerRadius="8"
+                                Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Official Details" FontSize="16" FontWeight="Bold" Foreground="White"/>
+
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Username (e.g., official.j.smith)" Foreground="Black" FontSize="16"/>
+                                    <TextBox Text="{Binding OfficialUsername}"
+                                            Height="40"
+                                            FontSize="14"
+                                            Foreground="#285A48"
+                                            Padding="10"
+                                            Background="#E0F5EC"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Password (e.g., SecurePass!2026)" Foreground="Black" FontSize="16"/>
+                                    <TextBox Text="{Binding Password}"
+                                            Height="40"
+                                            FontSize="14"
+                                            Foreground="#285A48"
+                                            Padding="10"
+                                            Background="#E0F5EC"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Polling Station" Foreground="Black" FontSize="14"/>
+                                    <ComboBox SelectedItem="{Binding SelectedPollingStation}"
+                                              ItemsSource="{Binding PollingStationOptions}"
+                                              Height="40"
+                                              FontSize="14"
+                                              PlaceholderText="Select polling station"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Border>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Spacing="10">
+                    <TextBlock Text="Fingerprint Capture" FontSize="16" FontWeight="Bold" Foreground="black" HorizontalAlignment="Center" TextAlignment="Center"/>
+
+                    <Panel Background="Black"
+                           Width="250"
+                           Height="250"
+                           HorizontalAlignment="Center">
+                        <Image Source="{Binding PreviewImage}"
+                               Width="250"
+                               Height="250"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"/>
+                    </Panel>
+
+                    <TextBlock Text="{Binding CaptureStatusMessage}"
+                               FontSize="12"
+                               Foreground="#333"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Width="280"
+                               IsVisible="{Binding !IsCooldownActive}"/>
+
+                    <TextBlock Text="{Binding CooldownSecondsRemaining, StringFormat='Scanner cooldown: {0}s'}"
+                               FontSize="12"
+                               Foreground="#e67e22"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               IsVisible="{Binding IsCooldownActive}"/>
+
+                    <ProgressBar IsIndeterminate="True"
+                                 IsVisible="{Binding IsCapturing}"
+                                 Width="250"
+                                 Height="8"
+                                 HorizontalAlignment="Center"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Button 
+                            Command="{Binding SubmitCommand}"
+                            Background="{StaticResource AccentBrush2}"
+                            Width="120"
+                            Height="50"
+                            BorderThickness="2"
+                            BorderBrush="Black"
+                            FontSize="16">
+                            <TextBlock Text="Submit" Foreground="white"/>
+                        </Button>
+
+                        <Button
+                            Command="{Binding ReCaptureCommand}"
+                            Background="{StaticResource AccentBrush1}"
+                            Width="120"
+                            Height="50"
+                            BorderThickness="2"
+                            BorderBrush="Black"
+                            FontSize="16"
+                            IsEnabled="{Binding !IsCapturing}">
+                            <TextBlock Text="Recapture" Foreground="white"/>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Place finger on the scanner"
+                                   FontSize="16"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="Press lightly and hold for 3 seconds"
+                                   FontSize="12"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="StatusMessage"
+                               Text="{Binding StatusMessage}"
+                               TextWrapping="Wrap"
+                               Foreground="{Binding StatusColor}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Content="← Back"
+            Command="{Binding CancelCommand}"
+            Padding="10,5"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Margin="10"
+            Background="{StaticResource AccentBrush1}"
+            Foreground="White"/>
+    </Grid>
+</UserControl>

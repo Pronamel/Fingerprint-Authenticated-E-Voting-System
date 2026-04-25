@@ -1,0 +1,227 @@
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using officialApp.Models;
+
+namespace officialApp.Services;
+
+public class ServerHandler : IServerHandler
+{
+    private readonly IApiService _apiService;
+    
+    // Events for real-time updates
+    public event Action<DeviceManagementInfo>? DeviceConnected;
+    public event Action<DeviceManagementInfo>? DeviceDisconnected;
+    public event Action<DeviceManagementInfo>? DeviceInfoUpdated;
+    public event Action<string>? AccessCodeGenerated;
+
+    public bool IsAuthenticated => _apiService.IsAuthenticated;
+    
+    public ServerHandler(IApiService apiService)
+    {
+        _apiService = apiService;
+    }
+
+    // ==========================================
+    // AUTHENTICATION HELPER
+    // ==========================================
+    
+    private void ThrowIfNotAuthenticated()
+    {
+        if (!IsAuthenticated)
+        {
+            throw new InvalidOperationException("Not authenticated. Please login first.");
+        }
+    }
+    
+    // ==========================================
+    // SERVER COMMUNICATION (calls ApiService)
+    // ==========================================
+
+    public Task<OfficialLoginResponse?> LoginAsync(string username, string password)
+        => _apiService.LoginAsync(username, password);
+
+    public Task<bool> LogoutAsync()
+        => _apiService.LogoutAsync();
+    
+    // ==========================================
+    // DEVICE MANAGEMENT (with data processing)
+    // ==========================================
+    
+    public async Task<DeviceManagementInfo?> GetDeviceManagementInfoAsync()
+    {
+        try
+        {
+            ThrowIfNotAuthenticated();
+            
+            // Call real server endpoint
+            var deviceInfo = await _apiService.GetDeviceManagementInfoAsync();
+            
+            if (deviceInfo != null)
+            {
+                // Process and validate data before returning
+                return ProcessDeviceInfo(deviceInfo);
+            }
+            
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public Task<List<dynamic>?> GetAllVotersAsync()
+        => _apiService.GetAllVotersAsync();
+
+    public Task<List<PollingStationOption>?> GetAllPollingStationsAsync()
+        => _apiService.GetAllPollingStationsAsync();
+
+    public Task<(bool Success, string Message)> CreateVoterWithFingerprintAsync(
+        string nin,
+        string firstName,
+        string lastName,
+        string dateOfBirth,
+        string townOfBirth,
+        string postCode,
+        string county,
+        string constituency,
+        byte[] fingerprintData)
+        => _apiService.CreateVoterWithFingerprintAsync(
+            nin,
+            firstName,
+            lastName,
+            dateOfBirth,
+            townOfBirth,
+            postCode,
+            county,
+            constituency,
+            fingerprintData);
+
+    public Task<(bool Success, string Message)> CreateOfficialWithFingerprintAsync(
+        string username,
+        string password,
+        string pollingStationId,
+        string county,
+        byte[] fingerprintData)
+        => _apiService.CreateOfficialWithFingerprintAsync(username, password, pollingStationId, county, fingerprintData);
+
+    public Task<ProxyAssignmentResponse?> AssignProxyVoterAsync(
+        string representedFirstName,
+        string representedLastName,
+        string representedDateOfBirth,
+        string representedPostCode,
+        string representedTownOfBirth,
+        string proxyFirstName,
+        string proxyLastName,
+        string proxyDateOfBirth,
+        string proxyPostCode,
+        string proxyTownOfBirth,
+        byte[] scannedFingerprint)
+        => _apiService.AssignProxyVoterAsync(
+            representedFirstName,
+            representedLastName,
+            representedDateOfBirth,
+            representedPostCode,
+            representedTownOfBirth,
+            proxyFirstName,
+            proxyLastName,
+            proxyDateOfBirth,
+            proxyPostCode,
+            proxyTownOfBirth,
+            scannedFingerprint);
+
+    public Task<FingerprintComparisonResponse?> VerifyFingerprintAsync(string username, string password, byte[] scannedFingerprint)
+        => _apiService.VerifyFingerprintAsync(username, password, scannedFingerprint);
+
+    public Task<bool> SetAccessCodeAsync(string accessCode)
+        => _apiService.SetAccessCodeAsync(accessCode);
+
+    public Task<bool> SendDeviceCommandAsync(SendDeviceCommandRequest request)
+        => _apiService.SendDeviceCommandAsync(request);
+
+    public Task<PollingStationVoteCountResponse?> GetPollingStationVoteCountAsync()
+        => _apiService.GetPollingStationVoteCountAsync();
+
+    public Task<ElectionStatistics?> GetElectionStatisticsAsync()
+        => _apiService.GetElectionStatisticsAsync();
+
+    public Task<DuplicateFingerprintScanResponse?> ScanDuplicateVoterFingerprintsAsync()
+        => _apiService.ScanDuplicateVoterFingerprintsAsync();
+    
+    public async Task<bool> UpdateDeviceManagementInfoAsync(DeviceManagementInfo deviceInfo)
+    {
+        try
+        {
+            ThrowIfNotAuthenticated();
+            
+            // Process and validate the data first
+            var processedInfo = ProcessDeviceInfo(deviceInfo);
+            if (processedInfo == null)
+                return false;
+            
+            // Send to real server endpoint
+            bool success = await _apiService.SendDeviceManagementInfoAsync(processedInfo);
+            
+            if (success)
+            {
+                DeviceInfoUpdated?.Invoke(processedInfo);
+                return true;
+            }
+            
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    
+    // ==========================================
+    // DATA PROCESSING METHODS
+    // ==========================================
+    
+    
+    private DeviceManagementInfo? ProcessDeviceInfo(DeviceManagementInfo deviceInfo)
+    {
+        // Add validation and processing logic here
+        if (string.IsNullOrEmpty(deviceInfo.PollingStationID))
+            return null;
+            
+        // Update device count based on actual device names
+        deviceInfo.No_ConnectedDevices = deviceInfo.DeviceNames?.Count ?? 0;
+        
+        return deviceInfo;
+    }
+    
+    private bool ValidateDeviceInput(string deviceName, string pollingStationId)
+    {
+        return !string.IsNullOrWhiteSpace(deviceName) && 
+               !string.IsNullOrWhiteSpace(pollingStationId);
+    }
+    
+    public async Task<bool> GenerateAccessCodeForVoterAsync(string voterNIN)
+    {
+        try
+        {
+            ThrowIfNotAuthenticated();
+            
+            var success = await _apiService.GenerateAccessCodeAsync(voterNIN);
+            if (success)
+            {
+                // Since we don't get the actual code back from the API,
+                // we'll just notify that a code was generated for this voter
+                AccessCodeGenerated?.Invoke($"Code generated for {voterNIN}");
+            }
+            return success;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating access code: {ex.Message}");
+            return false;
+        }
+    }
+}

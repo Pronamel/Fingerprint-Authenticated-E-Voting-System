@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:vm="using:SecureVoteApp.ViewModels"
+            xmlns:models="using:SecureVoteApp.Models"
+            xmlns:views="using:SecureVoteApp.Views.VoterUI"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="380"
+            x:Class="SecureVoteApp.Views.VoterUI.BallotPaperView"
+            x:DataType="vm:BallotPaperViewModel">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:BallotPaperViewModel/>
+    </Design.DataContext>
+
+    <Grid Background="#BBE1FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="85*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Top Grid - 15% of view -->
+        <Grid Grid.Row="0" Background="#BBE1FA">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="5" Margin="25,0,0,0">
+                <TextBlock Text="-Election of the member of parlament for the [Fake] constituency"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="#1B262C"
+                           HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding ReadingCandidateName}"
+                           FontSize="16"
+                           Foreground="#1B262C"
+                           HorizontalAlignment="Left"/>
+            </StackPanel>
+            
+            <!-- Cast Vote Button at top right -->
+            <StackPanel HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,25,0"
+                        Spacing="5">
+                        
+                <Button Command="{Binding CastVoteCommand}"
+                        Content="Cast Vote"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="#0F4C75"
+                        Foreground="White"
+                        Padding="15,8"
+                        IsEnabled="{Binding !IsCastingVote}"/>
+                        
+                <TextBlock Text="{Binding VoteStatus}"
+                           FontSize="12"
+                           HorizontalAlignment="Center"
+                           Foreground="#0F4C75"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Bottom Grid - 85% of view with candidates -->
+            <Grid Grid.Row="1" Background="#BBE1FA" Margin="15,0,15,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding LeftCandidates}" Margin="20">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="20" Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:CandidateButtonControl/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding RightCandidates}" Margin="20">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="20" Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:CandidateButtonControl/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <Border IsVisible="{Binding ShowVoteCastPopup}"
+                Grid.RowSpan="2"
+                Background="#80000000"
+                ZIndex="100">
+            <Border HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="#0F4C75"
+                    CornerRadius="12"
+                    Padding="26,18"
+                    MinWidth="320">
+                <TextBlock Text="Vote has been cast"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           Foreground="White"/>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

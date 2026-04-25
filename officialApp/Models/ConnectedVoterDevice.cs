@@ -1,0 +1,30 @@
+using System;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace officialApp.Models;
+
+public partial class ConnectedVoterDevice : ObservableObject
+{
+    [ObservableProperty]
+    private int voterId;
+
+    [ObservableProperty]
+    private int deviceNumber;
+
+    [ObservableProperty]
+    private string status = "Idle";
+
+    [ObservableProperty]
+    private DateTime connectedAtTime;
+
+    [ObservableProperty]
+    private string deviceIdentifier = ""; 
+
+    [ObservableProperty]
+    private DateTime lastStatusTime; // Track when device last sent status update
+
+    [ObservableProperty]
+    private bool isLockedByOfficial;
+
+    public string DisplayLabel => $"Device #{DeviceNumber}";
+}

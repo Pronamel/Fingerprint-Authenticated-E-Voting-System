@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SecureVoteApp.ViewModels"
+             x:Class="SecureVoteApp.Views.VoterUI.CandidateButtonControl"
+             x:DataType="vm:CandidateButtonViewModel">
+
+    <Design.DataContext>
+        <vm:CandidateButtonViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Top Line -->
+        <Border Grid.Row="0" 
+                Height="2" 
+            Background="#1B262C"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,25,0"/>
+        
+        <!-- Content Area with candidate details and button -->
+        <Grid Grid.Row="1" Margin="10,0,25,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Candidate Information Text -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+                <TextBlock Text="{Binding CandidateName}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#1B262C"/>
+                <TextBlock Text="{Binding Bio}"
+                           FontSize="13"
+                           Foreground="#0F4C75"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+            
+            <!-- Checkbox-style Button -->
+            <Button Grid.Column="1"
+                    Name="CandidateButton"
+                    Content=""
+                    Command="{Binding SelectCandidateCommand}"
+                    Background="{Binding ButtonBackground}"
+                    BorderBrush="#1B262C"
+                    BorderThickness="2"
+                    Width="60"
+                    Height="60"
+                    Margin="0,8,0,8"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    VerticalAlignment="Center"/>
+        </Grid>
+        
+        <!-- Bottom Line -->
+        <Border Grid.Row="2" 
+                Height="2" 
+            Background="#1B262C"
+                HorizontalAlignment="Stretch" 
+                Margin="0,0,25,0"/>
+    </Grid>
+</UserControl>
